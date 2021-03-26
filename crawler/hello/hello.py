@@ -9,6 +9,9 @@ class BlogSpider(scrapy.Spider):
             yield {'title': title.css('::text').get()}
 
         for next_page in response.css('a.next'):
+            print("__start__")
+            print(next_page)
+            print("__end__")
             yield response.follow(next_page, self.parse)
 
 
