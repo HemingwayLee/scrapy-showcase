@@ -1,36 +1,76 @@
 import time
+import json
 import traceback
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import ElementNotVisibleException, StaleElementReferenceException
+import hashlib
 
-def get_all_clickable_tags(driver, visited):
+
+# def _translate(lemma, words):
+#     links = []
+#     nodes = [{"name": lemma, "color": "red", "type": "url"}]
+#     idx = 1
+#     for ws in words:
+#         currIdx = idx
+
+#         nodes.append({"name": ws["synset"], "color": "blue", "type": "synset"})
+#         links.append({"source": 0, "target": idx, "weight": 1})
+#         newWords = wrapper.getSenseWithWord(ws["synset"], lemma)
+#         idx = idx + 1
+#         for nws in newWords:
+#             nodes.append({"name": nws["lemma"], "color": "red", "type": "word"})
+#             links.append({"source": currIdx, "target": idx, "weight": 1})
+#             idx = idx + 1
+    
+#     res = { "nodes": nodes, "links": links }
+#     print(res)
+#     return res
+
+def get_md5(key):
+    return hashlib.md5(key.encode()).hexdigest()
+
+def get_all_clickable_tags(driver):
+    div = driver.find_elements_by_css_selector("div[onclick]")
+    a = driver.find_elements_by_css_selector('a[href]')
+    btn = driver.find_elements_by_css_selector("button[onclick]")
+    return div + a + btn
+
+def do_dfs(driver, visited, parentUrl, nodes, links, nodeDict, clickedTagKey):
     time.sleep(7)
 
-    print(driver.current_url)
+    print(f"\n\nfrom: {parentUrl}")
+    print(f"dfs: {driver.current_url}\n")
     if driver.current_url not in visited:
         visited.add(driver.current_url)
+        nodes.append({"name": driver.current_url, "color": "red", "type": "url"})
+        nodeDict[driver.current_url] = len(nodeDict)
 
-        # for btn in driver.find_elements_by_tag_name('button'):
-        #     print(f"try {btn.tag_name}")
-        #     btn.click()
-        #     get_all_clickable_tags(driver, visited)
-        #     driver.back()
-
-        # for a in driver.find_elements_by_css_selector('a[href]'):
-        #     print(f"try {a.tag_name}")
-        #     a.click()
-        #     get_all_clickable_tags(driver, visited)
-        #     driver.back()
-        
-        divs = driver.find_elements_by_css_selector("div[onclick]")
-        for i in range(len(divs)):
+        tags = get_all_clickable_tags(driver)
+        print(tags)
+        for i in range(len(tags)):
             try:
-                print(f"try {divs[i].tag_name}")
-                divs[i].click()
-                get_all_clickable_tags(driver, visited)
-                driver.back()
-                divs = driver.find_elements_by_css_selector("div[onclick]")
+                print(f"i: {i} of {len(tags)}")
+                print(f"try {tags[i].tag_name}")
+
+                tagIdx = len(nodeDict)
+                tagKey = get_md5(driver.current_url) + str(i)
+                nodes.append({"name": tagKey, "color": "blue", "type": tags[i].tag_name, "url": driver.current_url, "i": i})
+                links.append({"source": nodeDict[driver.current_url], "target": tagIdx, "weight": 1})
+                nodeDict[tagKey] = tagIdx
+
+                tmp = driver.current_url
+                tags[i].click()
+
+                doesSamePage = do_dfs(driver, visited, tmp, nodes, links, nodeDict, tagKey)
+                if not doesSamePage:
+                    driver.back()
+                    time.sleep(7)
+                    print(f"back to {driver.current_url}")
+
+                tags = get_all_clickable_tags(driver)
+                print(f" new tag length: {i} of {len(tags)}")
+
             except ElementNotVisibleException:
                 print("tag is not visible, skip")
                 continue
@@ -40,21 +80,42 @@ def get_all_clickable_tags(driver, visited):
     else:
         print(f"{driver.current_url} visited, skip...")
 
+    if clickedTagKey is not None:
+        links.append({"source": nodeDict[driver.current_url], "target": nodeDict[clickedTagKey], "weight": 1})
+    
+    if driver.current_url == parentUrl:
+        print("end, it is same url")
+        return True
+    else:
+        print("end, it is different url")
+        return False
 
-
-try:
-    urls = [ "http://ec2-54-238-101-61.ap-northeast-1.compute.amazonaws.com/" ]
-    visited = set()
-
+def get_driver():
     chrome_options = Options()
     chrome_options.add_argument("--headless")
     driver = webdriver.Chrome('./chromedriver', options=chrome_options) 
     
-    driver.get(urls[0])
-    get_all_clickable_tags(driver, visited)   
+    return driver
 
-    print("!!!!!!DONE!!!!!")
-    print(visited)
+try:
+    url = "http://ec2-54-238-101-61.ap-northeast-1.compute.amazonaws.com/"
+    visited = set()
+    links = []
+    nodes = []
+    parentUrl = None
+    nodeDict = {}
+    clickedTagKey = None
+
+    driver = get_driver()
+    driver.get(url)
+    do_dfs(driver, visited, parentUrl, nodes, links, nodeDict, clickedTagKey)   
+
+    print(nodes)
+    print(links)
+    res = { "nodes": nodes, "links": links }
+
+    with open('data.json', 'w') as fp:
+        json.dump(res, fp)
 except:
     print(traceback.format_exc())
 

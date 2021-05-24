@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>UI</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+    .empty {
+      border: solid 2px red;
+    }
+
+    .link {
+      stroke: #555555;
+    }
+
+    .node text {
+      stroke: #000000;
+      cursor: pointer;
+    }
+
+    .node circle{
+      stroke: #555555;
+      stroke-width: 2px;
+    }
+  </style>
+  <!-- force in d3v4 changed a lot, use v3 for now -->
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+  <div class="alert alert-danger" id="ans">
+  </div>
+  <div class="container">  
+    <div id="myjumbotron" class="jumbotron mt-3">
+      <label for="uploadFile">Try your file: </label>
+      <!-- <input type="file" id="uploadFile" accept=".json" onchange="uploadCsv();"/> -->
+      <span class="input-group-btn">
+        <button class="btn btn-success" onclick="getWordSense();">
+          <span class="glyphicon glyphicon-wrench"></span> Try your file
+        </button>
+      </span>
+      <hr>
+    </div>
+  </div>
+  <script>
+    const width = $("#myjumbotron").width();
+    const height = 400;
+    var svg = null;
+    var force = null;
+
+    function handleCsvData(data) {
+      return JSON.parse(data);
+    }
+
+    async function ReadFile(file) {
+      return await file.text()
+    }
+
+    function uploadCsv() {
+      const inputValue = document.getElementById("uploadFile").value;
+      if (inputValue === "") {
+        return;
+      }
+
+      const selectedFile = document.getElementById('uploadFile').files[0];
+      const promise = new Promise(resolve => {
+        const fileContent = ReadFile(selectedFile);
+        resolve(fileContent);
+      });
+
+      promise.then(fileContent => {
+        // console.log(fileContent);
+        handleCsvData(fileContent);
+      })
+    }
+
+    function showErrorMsg(xhr) {
+      $('#ans').text(`[${xhr.status}] ${xhr.responseText}`);
+      $('#ans').show()
+    }
+    
+    function getWordSense() {
+      d3.json("data.json", function(json) {
+        console.log(json);
+
+        force.nodes(json.nodes)
+          .links(json.links)
+          .start();
+
+        var link = svg.selectAll(".link")
+          .data(json.links)
+          .enter()
+          .append("line")
+          .attr("class", "link")
+          .style("stroke-width", function(d) { return Math.sqrt(d.weight); });
+
+        var node = svg.selectAll(".node")
+          .data(json.nodes)
+          .enter()
+          .append("g")
+          .attr("class", "node")
+          .call(force.drag);
+
+        node.append("circle")
+          .attr("r","5")
+          .style("fill", function(d) { return d.color });
+
+        node.append("text")
+          .attr("dx", 12)
+          .attr("dy", ".35em")
+          .text(function(d) { return d.name });
+
+        force.on("tick", function() {
+          link
+            .attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+
+          node.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+        });
+      });
+    }
+
+    // function getWordnet() {
+    //   if (!$('#word').val()) {
+    //     $('#word').addClass("empty");
+    //   } else {
+    //     $('#word').removeClass("empty");
+    //     svg.selectAll("*").remove();
+    //     getWordSense();
+    //   }
+    // }
+
+
+    $(document).ready(function() {
+      $('#ans').hide();
+
+      svg = d3.select("#myjumbotron")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .style("border", "solid 1px black");
+
+      force = d3.layout
+        .force()
+        .gravity(.05)
+        .distance(100)
+        .charge(-100)
+        .size([width, height]);
+    });
+  </script>
+</body>
+</html>
