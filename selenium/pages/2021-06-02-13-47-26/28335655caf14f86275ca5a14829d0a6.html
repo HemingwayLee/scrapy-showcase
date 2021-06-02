@@ -1,0 +1,102 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
+  <title>Word2Vec</title>
+  <!-- <meta charset="utf-8"> -->
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css" />
+  <script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script><style id="plotly.js-style-global"></style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script><style type="text/css">/* Chart.js */
+@-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}</style>
+  <script src="js/translate.min.js"></script>
+  <script src="js/lang.min.js"></script>
+  <script src="js/common.min.js"></script>
+  <style>
+    b {
+      background-color: #84DCC6;
+    }
+  </style>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-87597758-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-87597758-2');
+  </script>
+</head>
+<body>
+
+<div id="ie_msg" class="alert alert-danger trn" hidden="" data-trn-key="_IE_MSG_">You are using a MS browser (e.g. IE or Edge). Some functions can not work with your browser. Please use other browsers.</div>
+
+<div class="container">
+  <div class="tab-content">
+    <div class="tab-pane fade in active" id="tabW2v">
+      <div class="row">
+        <div class="col-md-4">
+          <div class="panel panel-primary">
+            <div class="panel-heading trn" data-trn-key="_PARAMETERS_">Parameters</div>
+            <div class="panel-body">
+              <label for="training_data" class="trn" data-trn-key="_TRAINING_DATA_">Training data: </label>
+              <div id="article">I eat chicken in Spain. I drink coffee in Italy. I eat fish in Japan. I eat pasta in Italy. I drink beer in Germany. I drink water in Spain. I eat chicken in Japan. I drink coffee in Germany. I eat fish in Italy. I eat pasta in Spain. I drink beer in Japan. I drink water in Japan.<b></b></div>
+              <hr />
+              <button class="btn btn-primary" id="w2v_training" onclick="w2v.train();">
+                <span class="glyphicon glyphicon-wrench"></span> <span class="trn" data-trn-key="_TRAIN_">Train</span>
+              </button>
+            </div>
+          </div>
+          <div class="panel panel-primary">
+            <div class="panel-heading trn" data-trn-key="_VECTORS_">Vectors</div>
+            <div class="panel-body">
+              <div id="positions" class="js-plotly-plot"><div class="plot-container plotly"><div class="user-select-none svg-container" style="position: relative; width: 688px; height: 450px;"><svg class="main-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="688" height="450" style="background: rgb(255, 255, 255);"><defs id="defs-dd8fd0"><g class="clips"/><g class="gradients"/></defs><g class="bglayer"/><g class="draglayer"/><g class="layer-below"><g class="imagelayer"/><g class="shapelayer"/></g><g class="cartesianlayer"/><g class="polarlayer"/><g class="ternarylayer"/><g class="geolayer"/><g class="funnelarealayer"/><g class="pielayer"/><g class="treemaplayer"/><g class="sunburstlayer"/><g class="glimages"/></svg><div class="gl-container"><div id="scene" style="position: absolute; left: 0px; top: 0px; height: 450px; width: 688px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 688 450" width="688" height="450" style="position: absolute; left: 0px; top: 0px; height: 100%; width: 100%; z-index: 20; pointer-events: none;"/><canvas width="1376" height="900" style="position: absolute; left: 0px; top: 0px; width: 688px; height: 450px;"></canvas></div></div><svg class="main-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="688" height="450"><defs id="topdefs-dd8fd0"><g class="clips"/></defs><g class="indicatorlayer"/><g class="layer-above"><g class="imagelayer"/><g class="shapelayer"/></g><g class="infolayer"><g class="g-gtitle"/></g><g class="menulayer"/><g class="zoomlayer"/></svg><div class="modebar-container" style="position: absolute; top: 0px; right: 0px; width: 100%;"></div><svg class="main-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="688" height="450"><g class="hoverlayer"/></svg></div></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="panel panel-primary">
+            <div class="panel-heading trn" data-trn-key="_NN_VIS_">Neural Network Visualization</div>
+            <div id="w2v-vis"><div><svg xmlns="http://www.w3.org/2000/svg" width="718" height="1000" style="background-color: #ADD7F6;"><g class="input-text"><text/></g><g class="input-text"><text/></g><g class="input-text"><text/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="hidden1-neuron"><circle/></g><g class="hidden1-neuron"><circle/></g><g class="hidden1-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g></svg></div></div>
+            <div class="panel-footer">
+              <div id="w2v_epoch"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br /><br /><br />
+
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="js/w2v.min.js"></script><div style="padding: 5px; background-color: rgb(132, 220, 198); color: white; font-size: 16px; position: absolute; z-index: 10; visibility: hidden;"></div><svg id="js-plotly-tester" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="position: absolute; left: -10000px; top: -10000px; width: 9000px; height: 9000px; z-index: 1;"><path class="js-reference-point" d="M0,0H1V1H0Z" style="stroke-width: 0; fill: black;"/></svg>
+
+<script>
+  let translator = null;
+
+  function changeLanguage(lang) {
+    w2v.changeLanguage(lang, translator);
+  }
+
+  function detectMsBrowsers() {
+    using_ms_browser = navigator.appName == 'Microsoft Internet Explorer' || (navigator.appName == "Netscape" &amp;&amp; navigator.appVersion.indexOf('Edge') &gt; -1) || (navigator.appName == "Netscape" &amp;&amp; navigator.appVersion.indexOf('Trident') &gt; -1);
+    if (using_ms_browser == true) {
+      $('#ie_msg').removeAttr('hidden');
+    }
+  }
+
+  $(document).ready(function() {
+    detectMsBrowsers();
+
+    translator = $('body').translate({lang: "en", t: langDict});
+
+    $("#testing").prop('disabled', true);
+    $("#xvalue").prop('disabled', true);
+
+    w2v.initNetwork();
+  });
+</script>
+
+
+</body></html>

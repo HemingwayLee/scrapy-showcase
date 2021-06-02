@@ -1,0 +1,59 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
+  <meta charset="utf-8" />
+  <title>ngram language model</title>
+  <style>
+  </style>
+  <script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script><script src="https://d3js.org/d3.v4.min.js"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-87597758-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-87597758-2');
+  </script>
+</head>
+<body>
+  <div class="container">  
+    <div class="jumbotron mt-3">
+      <table>
+        <tbody><tr>
+          <td>
+            <h2>Explanation</h2>
+            <div>ngram: n-th word depends on preceding n-1 words</div>
+            <div>3gram: 3rd word depends on preceding 2 words</div>
+            <hr />
+            <h2>Article</h2>
+            <div id="article1">
+              <span style="color: gray">[START]</span> I am good <span style="color: gray">[END]</span>
+            </div>
+            <div id="article2">
+              <span style="color: gray">[START]</span> I can fly <span style="color: gray">[END]</span>
+            </div>
+            <div id="article3">
+              <span style="color: gray">[START]</span> I can fly high <span style="color: gray">[END]</span>
+            </div>
+            <hr />
+            <button id="goBtn" onclick="ngramlm.gogogogo();">Build ngram Tree</button> 
+            <hr />
+            <label for="langmodel">Predict the next word: <span style="color: gray">[START]</span></label>
+            <input id="langmodel" type="text" autocomplete="off" oninput="ngramlm.findNode();" disabled="" />
+            <div id="prediction">
+            </div>
+          </td>
+          <td>
+            <div id="ngramtree" style="border: 1px solid black"><svg xmlns="http://www.w3.org/2000/svg" width="600" height="600"><g transform="translate(-50,20)"><g class="node" transform="translate(0,275)"><circle class="node" r="15" id="circle1" cursor="pointer" style="fill: rgb(255, 255, 255);"/><text y="18" dy=".35em" text-anchor="middle" id="txt1" style="fill-opacity: 1;"/></g></g></svg></div>
+          </td>
+        </tr>
+      </tbody></table>
+    </div>
+  </div>
+  <script src="js/common.min.js"></script>
+  <script src="js/ngramLangModel.min.js"></script>
+  <script>
+    ngramlm.init();
+  </script>
+
+
+</body></html>

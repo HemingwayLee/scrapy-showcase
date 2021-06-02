@@ -1,6 +1,8 @@
 import time
 import json
 import traceback
+import os
+from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import ElementNotVisibleException, StaleElementReferenceException
@@ -36,14 +38,25 @@ def get_all_clickable_tags(driver):
     btn = driver.find_elements_by_css_selector("button[onclick]")
     return div + a + btn
 
-def do_dfs(driver, visited, parentUrl, nodes, links, nodeDict, clickedTagKey):
+def write2file(driver, foldername):
+    content = driver.page_source
+    filename = get_md5(driver.current_url)
+    path = f'{foldername}/{filename}.html'
+
+    with open(path, 'w') as fp:
+        fp.write(content)
+
+    return path
+
+def do_dfs(driver, visited, parentUrl, nodes, links, nodeDict, clickedTagKey, foldername):
     time.sleep(7)
 
     print(f"\n\nfrom: {parentUrl}")
     print(f"dfs: {driver.current_url}\n")
     if driver.current_url not in visited:
         visited.add(driver.current_url)
-        nodes.append({"name": driver.current_url, "color": "red", "type": "url"})
+        path = write2file(driver, foldername)
+        nodes.append({"name": driver.title, "path": path, "url": driver.current_url, "color": "red", "type": "url"})
         nodeDict[driver.current_url] = len(nodeDict)
 
         tags = get_all_clickable_tags(driver)
@@ -62,7 +75,7 @@ def do_dfs(driver, visited, parentUrl, nodes, links, nodeDict, clickedTagKey):
                 tmp = driver.current_url
                 tags[i].click()
 
-                doesSamePage = do_dfs(driver, visited, tmp, nodes, links, nodeDict, tagKey)
+                doesSamePage = do_dfs(driver, visited, tmp, nodes, links, nodeDict, tagKey, foldername)
                 if not doesSamePage:
                     driver.back()
                     time.sleep(7)
@@ -97,6 +110,14 @@ def get_driver():
     
     return driver
 
+def create_folder():
+    now = datetime.now()
+    dtString = now.strftime("%Y-%m-%d-%H-%M-%S")
+    foldername = f"./pages/{dtString}"
+    os.mkdir(foldername)
+
+    return foldername
+
 try:
     url = "http://ec2-54-238-101-61.ap-northeast-1.compute.amazonaws.com/"
     visited = set()
@@ -106,9 +127,11 @@ try:
     nodeDict = {}
     clickedTagKey = None
 
+    foldername = create_folder()
+
     driver = get_driver()
     driver.get(url)
-    do_dfs(driver, visited, parentUrl, nodes, links, nodeDict, clickedTagKey)   
+    do_dfs(driver, visited, parentUrl, nodes, links, nodeDict, clickedTagKey, foldername)   
 
     print(nodes)
     print(links)

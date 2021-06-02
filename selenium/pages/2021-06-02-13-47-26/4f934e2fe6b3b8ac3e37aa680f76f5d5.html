@@ -1,0 +1,154 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head>
+  <title>Neural Network Visualization</title>
+  <!-- <meta charset="utf-8"> -->
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css" />
+  <script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script><style type="text/css">/* Chart.js */
+@-webkit-keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}@keyframes chartjs-render-animation{from{opacity:0.99}to{opacity:1}}.chartjs-render-monitor{-webkit-animation:chartjs-render-animation 0.001s;animation:chartjs-render-animation 0.001s;}</style>
+  <script src="js/translate.min.js"></script>
+  <script src="js/lang.min.js"></script>
+  <script src="js/common.min.js"></script>
+  <style>
+    .my-custom-scrollbar {
+      position: relative;
+      height: 350px;
+      overflow: auto;
+    }
+
+    .table-wrapper-scroll-y {
+      display: block;
+    }
+  </style>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-87597758-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-87597758-2');
+  </script>
+</head>
+<body>
+
+<div id="ie_msg" class="alert alert-danger trn" hidden="" data-trn-key="_IE_MSG_">You are using a MS browser (e.g. IE or Edge). Some functions can not work with your browser. Please use other browsers.</div>
+
+<div class="container">
+  <div class="tab-content">
+    <div class="tab-pane fade in active" id="tabNn">   
+      <div class="row">
+        <div class="col-md-4">
+          <div class="panel panel-primary">
+            <div class="panel-heading trn" data-trn-key="_PARAMETERS_">Parameters</div>
+            <div class="panel-body">
+              <table style="width: 100%;">
+                <tbody>
+                  <tr><td>
+                    <label for="training_data" class="trn" data-trn-key="_TRAINING_DATA_">Training data: </label>
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                      <table id="training_data" class="table table-striped">
+                        <thead>
+                          <tr><th>x</th><th>y</th></tr>
+                        </thead>
+                        <tbody>
+                          <tr><td id="_BAD_" class="trn" data-trn-key="_BAD_">bad</td><td>[0, 1]</td></tr>
+                          <tr><td id="_MISERABLE_" class="trn" data-trn-key="_MISERABLE_">miserable</td><td>[0, 1]</td></tr>
+                          <tr><td id="_FINE_" class="trn" data-trn-key="_FINE_">fine</td><td>[1, 0]</td></tr>
+                          <tr><td id="_DISTORTED_" class="trn" data-trn-key="_DISTORTED_">distorted</td><td>[0, 1]</td></tr>
+                          <tr><td id="_BEST_" class="trn" data-trn-key="_BEST_">best</td><td>[1, 0]</td></tr>
+                          <tr><td id="_FALLEN_" class="trn" data-trn-key="_FALLEN_">fallen</td><td>[0, 1]</td></tr>
+                          <tr><td id="_OBSCENE_" class="trn" data-trn-key="_OBSCENE_">obscene</td><td>[0, 1]</td></tr>
+                          <tr><td id="_WELL_" class="trn" data-trn-key="_WELL_">well</td><td>[1, 0]</td></tr>
+                          <tr><td id="_GREAT_" class="trn" data-trn-key="_GREAT_">great</td><td>[1, 0]</td></tr>
+                          <tr><td id="_FIERCE_" class="trn" data-trn-key="_FIERCE_">fierce</td><td>[0, 1]</td></tr>
+                          <tr><td id="_TOP_" class="trn" data-trn-key="_TOP_">top</td><td>[1, 0]</td></tr>
+                          <tr><td id="_MISFORTUNE_" class="trn" data-trn-key="_MISFORTUNE_">misfortune</td><td>[0, 1]</td></tr>
+                          <tr><td id="_PLEASANT_" class="trn" data-trn-key="_PLEASANT_">pleasant</td><td>[1, 0]</td></tr>
+                          <tr><td id="_DISASTER_" class="trn" data-trn-key="_DISASTER_">disaster</td><td>[0, 1]</td></tr>
+                          <tr><td id="_CUTE_" class="trn" data-trn-key="_CUTE_">cute</td><td>[1, 0]</td></tr>
+                          <tr><td id="_HATRED_" class="trn" data-trn-key="_HATRED_">hatred</td><td>[0, 1]</td></tr>
+                          <tr><td id="_SAD_" class="trn" data-trn-key="_SAD_">sad</td><td>[0, 1]</td></tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <button class="btn btn-primary" id="nn_training" onclick="nn.train();">
+                      <span class="glyphicon glyphicon-wrench"></span> <span class="trn" data-trn-key="_TRAIN_">Train</span>
+                    </button>
+                  </td></tr>
+                  <tr><td>
+                    <p></p>
+                    <label for="xvalue" class="trn" data-trn-key="_TEST_DATA_">Test data: </label>
+                    <select id="xvalue" class="form-control" size="6" disabled="">
+                      <option value="_DISCOMFORT_" class="trn" data-trn-key="_DISCOMFORT_">discomfort</option>
+                      <option value="_WRONG_" class="trn" data-trn-key="_WRONG_">wrong</option>
+                      <option value="_NICE_" class="trn" data-trn-key="_NICE_">nice</option>
+                      <option value="_RIGHT_" class="trn" data-trn-key="_RIGHT_">right</option>
+                      <option value="_GOOD_" class="trn" data-trn-key="_GOOD_">good</option>
+                      <option value="_EVIL_" class="trn" data-trn-key="_EVIL_">evil</option>
+                    </select>
+                    <br />
+                    <button class="btn btn-primary" id="testing" onclick="nn.test();" disabled="">
+                      <span class="glyphicon glyphicon-wrench"></span> <span class="trn" data-trn-key="_TEST_">Test</span>
+                    </button>
+                  </td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8"> 
+          <div class="panel panel-primary">
+            <div class="panel-heading trn" data-trn-key="_NN_VIS_">Neural Network Visualization</div>
+            <div id="neuron-vis"><div><svg xmlns="http://www.w3.org/2000/svg" width="718" height="350" style="background-color: #ADD7F6;"><g class="input-text"><text/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="input-neuron"><circle/></g><g class="hidden1-neuron"><circle/></g><g class="hidden1-neuron"><circle/></g><g class="hidden1-neuron"><circle/></g><g class="hidden1-neuron"><circle/></g><g class="hidden1-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="hidden2-neuron"><circle/></g><g class="output-neuron"><circle/></g><g class="output-neuron"><circle/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="input-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="hidden-edge"><line/></g><g class="output-edge"><line/></g><g class="output-edge"><line/></g><g class="output-edge"><line/></g><g class="output-edge"><line/></g><g class="output-edge"><line/></g><g class="output-edge"><line/></g><g class="output-edge"><line/></g><g class="output-edge"><line/></g><g class="output-edge"><line/></g><g class="output-edge"><line/></g></svg></div></div>
+            <div class="panel-footer">
+              <div id="nn_epoch"></div>
+              <div id="res1"></div>
+              <div id="res2"></div>
+            </div>
+          </div>
+          <div class="panel panel-primary"><div class="chartjs-size-monitor" style="position: absolute; inset: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;"><div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div></div><div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;"><div style="position:absolute;width:200%;height:200%;left:0; top:0"></div></div></div>
+            <div class="panel-heading trn" data-trn-key="_LOSS_OVER_ITER_">Loss over epoch</div>
+            <canvas id="nn_errors" width="718" height="359" style="display: block; width: 718px; height: 359px;" class="chartjs-render-monitor"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br /><br /><br />
+
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script src="js/nn.min.js"></script><div style="padding: 5px; background-color: rgb(132, 220, 198); color: white; font-size: 16px; position: absolute; z-index: 10; visibility: hidden;"></div>
+
+<script>
+  let translator = null;
+
+  function changeLanguage(lang) {
+    nn.changeLanguage(lang, translator);
+  }
+
+  function detectMsBrowsers() {
+    using_ms_browser = navigator.appName == 'Microsoft Internet Explorer' || (navigator.appName == "Netscape" &amp;&amp; navigator.appVersion.indexOf('Edge') &gt; -1) || (navigator.appName == "Netscape" &amp;&amp; navigator.appVersion.indexOf('Trident') &gt; -1);
+    if (using_ms_browser == true) {
+      $('#ie_msg').removeAttr('hidden');
+    }
+  }
+
+  $(document).ready(function() {
+    detectMsBrowsers();
+
+    translator = $('body').translate({lang: "en", t: langDict});
+
+    $("#testing").prop('disabled', true);
+    $("#xvalue").prop('disabled', true);
+
+    nn.initNetwork();
+  });
+</script>
+
+
+</body></html>
