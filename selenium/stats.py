@@ -2,6 +2,7 @@ import time
 import json
 import traceback
 import os
+import platform
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -106,7 +107,13 @@ def do_dfs(driver, visited, parentUrl, nodes, links, nodeDict, clickedTagKey, fo
 def get_driver():
     chrome_options = Options()
     chrome_options.add_argument("--headless")
-    driver = webdriver.Chrome('./chromedriver', options=chrome_options) 
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument('--disable-dev-shm-usage')
+    
+    if platform.system() == 'Darwin':
+        driver = webdriver.Chrome('./chromedriver', options=chrome_options) 
+    else:
+        driver = webdriver.Chrome('./chromedriver_linux', options=chrome_options) 
     
     return driver
 
